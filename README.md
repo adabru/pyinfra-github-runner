@@ -2,66 +2,69 @@
 
 ## Overview
 
-This project uses [pyinfra](https://pyinfra.com/) to setup a self-hosted github runner on an arch server with ssh access. Configuration settings are managed using a `.env` file. You need python 3.x.
+This project uses [pyinfra](https://pyinfra.com/) to setup a self-hosted github runner on an arch server with ssh access.
 
 ## Installation
 
-1. Clone the repository:
+Prerequisites:
 
-   ```sh
-   git clone https://github.com/adabru/pyinfra-github-runner.git
-   cd pyinfra-github-runner
-   ```
+- Python 3.x
+- git / Git for Windows
 
-2. Create and activate a virtual environment:
+Clone the repository
 
-   ```sh
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+```sh
+git clone https://github.com/adabru/pyinfra-github-runner.git
+cd pyinfra-github-runner
+```
 
-3. Install the required packages:
+Create and activate a virtual environment:
 
-   ```sh
-   pip install -r requirements.txt
-   ```
+```sh
+python -m venv venv
+# linux
+source venv/bin/activate
+# windows
+.\venv\Scripts\Activate.ps1
+```
 
-4. Create a `.env` file in the root directory of the project and add your configuration settings:
+Install the required packages:
 
-   ```env
-   # Example .env file
-   KEY=value
-   ```
+```sh
+pip install pyinfra
+```
 
-## Usage
+If you don't have an ssh key yet, create one:
 
-1. Load environment variables:
+```
+ssh-keygen -t ecdsa -b 521
+```
 
-   ```sh
-   source .env
-   ```
+Just keep pressing enter to finish the key generation with default values.
 
-2. Run pyinfra:
-   ```sh
-   pyinfra deploy.py
-   ```
+Add an entry to your `~/.ssh/config` file:
 
-## Configuration
+```
+Host ghrunner
+   HostName your.server.ip.address
+   User your-username
+   IdentityFile ~/.ssh/id_ecdsa
+```
 
-- All configuration settings should be added to the `.env` file.
+Replace `your.server.ip.address` with the IP address of your server and `your-username` with your SSH username. This will also allow to connect to the server with the command `ssh ghrunner`.
+
+If you run the script the first time, you need to use the root password to add your user to the server:
+
+```sh
+python add_user.py
+```
+
+Then you can run the deployment with following command:
+
+```sh
+pyinfra ghrunner deploy.py
+```
 
 ## Contributing
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a new Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-```
-
-```
+Feel free to open issues or pull requests :)
