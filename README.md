@@ -21,11 +21,11 @@ cd pyinfra-github-runner
 Create and activate a virtual environment:
 
 ```sh
-python -m venv venv
+python -m venv .venv
 # linux
-source venv/bin/activate
+source .venv/bin/activate
 # windows
-.\venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 Install the required packages:
