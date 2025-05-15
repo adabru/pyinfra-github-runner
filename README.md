@@ -31,7 +31,7 @@ source .venv/bin/activate
 Install the required packages:
 
 ```sh
-pip install pyinfra
+pip install pyinfra passlib
 ```
 
 If you don't have an ssh key yet, create one:

@@ -5,6 +5,7 @@ Reference for pyinfra api:  https://docs.pyinfra.com/en/2.x/api/index.html
 
 from pathlib import Path
 
+from passlib.hash import sha512_crypt
 from pyinfra.api import Config, Inventory, State  # noqa: E402
 from pyinfra.api.connect import connect_all  # noqa: E402
 from pyinfra.api.operation import add_op  # noqa: E402
@@ -50,6 +51,10 @@ if user_password != user_password_repeat:
     print("Passwords do not match")
     exit(1)
 
+# Encrypt the password in a "crypt" compatible format
+# see https://linux.die.net/man/8/useradd#:~:text=%2Dp
+user_password_encrypted = sha512_crypt.hash(user_password)
+
 print("Please enter the password for the root user on the target machine")
 root_password = input()
 
@@ -93,7 +98,7 @@ add_op(
     groups=["sudo"],
     home=f"/home/{user_name}",
     public_keys=user_ssh_pubkey,
-    password=user_password,
+    password=user_password_encrypted,
     present=True,
 )
 run_ops(state)
