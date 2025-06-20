@@ -3,6 +3,7 @@ This script automates the creation of a new admin user on a remote machine using
 Reference for pyinfra api:  https://docs.pyinfra.com/en/2.x/api/index.html
 """
 
+import sys
 from pathlib import Path
 
 from passlib.hash import sha512_crypt
@@ -12,14 +13,20 @@ from pyinfra.api.operation import add_op  # noqa: E402
 from pyinfra.api.operations import run_ops  # noqa: E402
 from pyinfra.operations import files, server  # noqa: E402
 
-# Read username and SSH key from "ghrunner" entry in .ssh/config
+if len(sys.argv) < 2:
+    print("Usage: python add_user.py <host_alias>")
+    exit(1)
+
+target_host = sys.argv[1]
+
+# Read username and SSH key from <target_host> entry in .ssh/config
 try:
     user_name = None
     user_ssh_keyfile = None
     with open(Path("~/.ssh/config").expanduser()) as f:
         lines = f.readlines()
         for i, line in enumerate(lines):
-            if line.strip() == "Host ghrunner":
+            if line.strip() == f"Host {target_host}":
                 for j in range(i + 1, len(lines)):
                     if lines[j].strip().startswith("User "):
                         user_name = lines[j].strip().split()[1]
@@ -35,7 +42,7 @@ except FileNotFoundError:
 
 if user_name is None or user_ssh_keyfile is None:
     print(
-        "Missing 'ghrunner' entry in .ssh/config or missing 'User' or 'IdentityFile' field in 'ghrunner' entry"
+        f"Missing '{target_host}' entry in .ssh/config or missing 'User' or 'IdentityFile' field in '{target_host}' entry"
     )
     exit(1)
 
@@ -60,7 +67,7 @@ root_password = input()
 
 hosts = [
     (
-        "ghrunner",
+        target_host,
         {
             "ssh_user": "root",
             "ssh_password": root_password,

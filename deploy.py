@@ -55,7 +55,9 @@ paru.setup()
 files.block(
     name="Patch github-actions-bin",
     path="/etc/paru.conf",
-    content=("[ADABRU]\nUrl = https://github.com/adabru/github-actions-bin"),
+    content=(
+        "[github-actions-bin]\nUrl = https://github.com/adabru/github-actions-bin"
+    ),
 )
 
 paru.packages(name="Install runner", packages=["github-actions-bin"])

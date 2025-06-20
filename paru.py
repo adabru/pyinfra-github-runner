@@ -45,20 +45,20 @@ def packages(packages: list[str], present: bool = True):
     if present:
         # Build packages and dependencies
         yield StringCommand(
-            "paru --noconfirm --noinstall " + " ".join(to_change),
+            "paru -S --noconfirm --noinstall " + " ".join(to_change),
             _sudo=False,
         )
         # Get non-sudo user name
         non_root_user_home = host.get_fact(Home, _sudo=False)
-        # Install previously built packages
+        # Install previously built packages, prioritize custom repositories
         artifact_list = " ".join(
             [
-                f"{non_root_user_home}/.cache/paru/clone/{package}/*.pkg.tar.zst"
+                f"{non_root_user_home}/.cache/paru/clone{{/repo,}}/{package}/*.pkg.tar.zst"
                 for package in to_change
             ]
         )
         yield StringCommand(
-            f"pacman -U {artifact_list} --noconfirm",
+            f"pacman -U --noconfirm `ls {artifact_list} | tr '\n' ' '`",
         )
     # Remove packages
     else:

@@ -51,12 +51,14 @@ Host ghrunner
    IdentityFile ~/.ssh/id_ecdsa
 ```
 
-Replace `your.server.ip.address` with the IP address of your server and `your-username` with your SSH username. This will also allow to connect to the server with the command `ssh ghrunner`.
+Replace `your.server.ip.address` with the IP address of your server.
+Replace `your-username` with your SSH username.
+Optionally replace `ghrunner` with an alias of your choice.
 
-If you run the script the first time, you need to use the root password to add your user to the server:
+Add your user to the server. You will need your server's root password.
 
 ```sh
-python add_user.py
+python add_user.py ghrunner
 ```
 
 Then you can run the deployment with following command:
@@ -64,6 +66,8 @@ Then you can run the deployment with following command:
 ```sh
 pyinfra ghrunner deploy.py
 ```
+
+Your server will be listed as self-hosted runner on GitHub now.
 
 ## Contributing
 
